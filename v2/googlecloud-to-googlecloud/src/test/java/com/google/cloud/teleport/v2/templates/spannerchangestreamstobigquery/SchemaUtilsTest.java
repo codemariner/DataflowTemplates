@@ -79,9 +79,7 @@ import com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.sch
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.apache.beam.sdk.io.gcp.spanner.changestreams.model.ModType;
 import org.json.JSONObject;
 import org.junit.Before;

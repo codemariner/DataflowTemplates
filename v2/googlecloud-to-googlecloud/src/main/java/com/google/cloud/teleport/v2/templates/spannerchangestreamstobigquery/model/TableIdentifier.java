@@ -26,8 +26,12 @@ public class TableIdentifier {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     TableIdentifier that = (TableIdentifier) o;
     return tableName.equals(that.tableName) && tableSchema.equals(that.tableSchema);
   }

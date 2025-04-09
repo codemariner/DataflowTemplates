@@ -30,7 +30,6 @@ import com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.mod
 import com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.model.TrackedSpannerColumn;
 import com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.model.TrackedSpannerTable;
 import com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.model.TrackedSpannerTableCollection;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

@@ -35,9 +35,7 @@ import com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.sch
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.apache.beam.sdk.io.gcp.spanner.SpannerAccessor;
 import org.apache.beam.sdk.io.gcp.spanner.changestreams.model.ModType;
 import org.apache.beam.sdk.io.gcp.spanner.changestreams.model.TypeCode;

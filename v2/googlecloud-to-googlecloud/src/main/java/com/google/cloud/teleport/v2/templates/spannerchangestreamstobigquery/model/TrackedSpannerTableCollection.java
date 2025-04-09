@@ -18,7 +18,7 @@ public class TrackedSpannerTableCollection implements Collection<TrackedSpannerT
     private final List<TrackedSpannerTable> tables = new ArrayList<>();
 
     /**
-     * Find a table by its fully qualified name (catalog.name)
+     * Find a table by its fully qualified name.
      * 
      * @param fullyQualifiedName The fully qualified table name
      * @return The table if found, or empty if no matching table exists

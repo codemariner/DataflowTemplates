@@ -15,8 +15,6 @@
  */
 package com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery;
 
-import static org.apache.beam.sdk.util.Preconditions.checkStateNotNull;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -51,7 +49,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -128,7 +125,7 @@ public final class FailsafeModJsonToTableRowTransformer {
       private transient SpannerAccessor spannerAccessor;
       private final SpannerConfig spannerConfig;
       private final String spannerChangeStream;
-      /** The tables that are part of the change stream */
+      /** The tables that are part of the change stream. */
       private TrackedSpannerTableCollection spannerTables;
       private final ImmutableSet<String> ignoreFields;
       public TupleTag<TableRow> transformOut;
