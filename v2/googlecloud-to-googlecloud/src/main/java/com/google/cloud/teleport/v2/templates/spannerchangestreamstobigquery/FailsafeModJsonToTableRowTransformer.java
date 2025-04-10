@@ -65,6 +65,7 @@ import org.apache.beam.sdk.values.PCollectionTuple;
 import org.apache.beam.sdk.values.TupleTag;
 import org.apache.beam.sdk.values.TupleTagList;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Throwables;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -177,6 +178,7 @@ public final class FailsafeModJsonToTableRowTransformer {
               new SpannerChangeStreamsUtils(
                       spannerAccessor.getDatabaseClient(), spannerChangeStream, dialect)
                   .getSpannerTables();
+          LOG.info("setUp: getSpannerTables: ", ReflectionToStringBuilder.toString(spannerTables));
         } catch (RuntimeException e) {
           LOG.error(
               String.format(

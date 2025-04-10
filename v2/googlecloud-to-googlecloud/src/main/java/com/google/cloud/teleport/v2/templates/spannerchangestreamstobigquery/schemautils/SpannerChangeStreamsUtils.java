@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,8 +93,12 @@ public class SpannerChangeStreamsUtils {
   public TrackedSpannerTableCollection getSpannerTables() {
     Set<TableIdentifier> spannerTableIdentifiers = getSpannerTablesTrackedByChangeStreams();
 
+    LOG.info("getSpannerTables: getSpannerTablesTrackedByChangeStreams: " + ReflectionToStringBuilder.reflectionToString(spannerTableIdentifiers));
+
     Map<TableIdentifier, Set<String>> spannerColumnNamesExplicitlyTrackedByChangeStreamByTableName =
         getSpannerColumnNamesExplicitlyTrackedByChangeStreamsByTableName();
+
+    LOG.info("getSpannerTables: getSpannerColumnNamesExplicitlyTrackedByChangeStreamsByTableName: " + ReflectionToStringBuilder.reflectionToString(spannerColumnNamesExplicitlyTrackedByChangeStreamByTableName));
 
     return getSpannerTableByName(
         spannerTableIdentifiers, spannerColumnNamesExplicitlyTrackedByChangeStreamByTableName);
@@ -109,12 +114,14 @@ public class SpannerChangeStreamsUtils {
   ) {
     Map<TableIdentifier, Map<String, Integer>> keyColumnNameToOrdinalPositionByTableIdentifier =
         getKeyColumnNameToOrdinalPositionByTableName(spannerTableIdentifiers);
+    LOG.info("getSpannerTableByName: getKeyColumnNameToOrdinalPositionByTableName: " + ReflectionToStringBuilder.reflectionToString(keyColumnNameToOrdinalPositionByTableIdentifier));
 
     Map<TableIdentifier, List<TrackedSpannerColumn>> spannerColumnsByTableIdentifier =
         getSpannerColumnsByTableIdentifier(
             spannerTableIdentifiers,
             keyColumnNameToOrdinalPositionByTableIdentifier,
             spannerColumnNamesExplicitlyTrackedByChangeStreamByTableName);
+    LOG.info("getSpannerTableByName: getSpannerColumnsByTableIdentifier: " + ReflectionToStringBuilder.reflectionToString(spannerColumnsByTableIdentifier));
 
     TrackedSpannerTableCollection result = new TrackedSpannerTableCollection();
 
@@ -363,6 +370,7 @@ public class SpannerChangeStreamsUtils {
                 .executeQuery(statementBuilder.build())
             : databaseClient.singleUse().executeQuery(statementBuilder.build())) {
 
+      LOG.debug("" + resultSet.getStats());
       while (resultSet.next()) {
         TableIdentifier tableIdentifier = new TableIdentifier(
             resultSet.getString(informationSchemaTableSchema()),

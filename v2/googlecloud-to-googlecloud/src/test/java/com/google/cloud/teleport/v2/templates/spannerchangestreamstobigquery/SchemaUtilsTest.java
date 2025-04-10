@@ -201,7 +201,7 @@ public class SchemaUtilsTest {
     mockInformationSchemaColumnsQuery();
     mockInformationSchemaKeyColumnUsageQuery();
     String sql =
-        "SELECT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.CHANGE_STREAM_COLUMNS "
+        "SELECT TABLE_NAME, TABLE_SCHEMA, COLUMN_NAME FROM INFORMATION_SCHEMA.CHANGE_STREAM_COLUMNS "
             + "WHERE CHANGE_STREAM_NAME = @changeStreamName";
     when(mockReadContext.executeQuery(
             Statement.newBuilder(sql).bind("changeStreamName").to(changeStreamName).build()))
@@ -209,6 +209,7 @@ public class SchemaUtilsTest {
             ResultSets.forRows(
                 Type.struct(
                     Type.StructField.of("TABLE_NAME", Type.string()),
+                    Type.StructField.of("TABLE_SCHEMA", Type.string()),
                     Type.StructField.of("COLUMN_NAME", Type.string())),
                 Collections.emptyList()));
 
@@ -842,7 +843,7 @@ public class SchemaUtilsTest {
 
   private void mockInformationSchemaColumnsQuery() {
     String sql =
-        "SELECT TABLE_NAME, COLUMN_NAME, ORDINAL_POSITION, SPANNER_TYPE "
+        "SELECT TABLE_NAME, TABLE_SCHEMA, COLUMN_NAME, ORDINAL_POSITION, SPANNER_TYPE "
             + "FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME IN UNNEST (@tableNames)";
     List<String> tableNames = new ArrayList<>();
     tableNames.add("Singers");
@@ -853,6 +854,8 @@ public class SchemaUtilsTest {
                 Struct.newBuilder()
                     .set("TABLE_NAME")
                     .to(Value.string("Singers"))
+                    .set("TABLE_SCHEMA")
+                    .to(Value.string(""))
                     .set("COLUMN_NAME")
                     .to(Value.string("SingerId"))
                     .set("ORDINAL_POSITION")
@@ -863,6 +866,8 @@ public class SchemaUtilsTest {
                 Struct.newBuilder()
                     .set("TABLE_NAME")
                     .to(Value.string("Singers"))
+                    .set("TABLE_SCHEMA")
+                    .to(Value.string(""))
                     .set("COLUMN_NAME")
                     .to(Value.string("FirstName"))
                     .set("ORDINAL_POSITION")
@@ -873,6 +878,8 @@ public class SchemaUtilsTest {
                 Struct.newBuilder()
                     .set("TABLE_NAME")
                     .to(Value.string("Singers"))
+                    .set("TABLE_SCHEMA")
+                    .to(Value.string(""))
                     .set("COLUMN_NAME")
                     .to(Value.string("LastName"))
                     .set("ORDINAL_POSITION")
@@ -891,6 +898,7 @@ public class SchemaUtilsTest {
             ResultSets.forRows(
                 Type.struct(
                     Type.StructField.of("TABLE_NAME", Type.string()),
+                    Type.StructField.of("TABLE_SCHEMA", Type.string()),
                     Type.StructField.of("COLUMN_NAME", Type.string()),
                     Type.StructField.of("ORDINAL_POSITION", Type.int64()),
                     Type.StructField.of("SPANNER_TYPE", Type.string())),
@@ -900,7 +908,7 @@ public class SchemaUtilsTest {
   private void mockInformationSchemaColumnsQueryPostgres() {
     StringBuilder sqlStringBuilder =
         new StringBuilder(
-            "SELECT TABLE_NAME, COLUMN_NAME, ORDINAL_POSITION, SPANNER_TYPE "
+            "SELECT TABLE_NAME, TABLE_SCHEMA, COLUMN_NAME, ORDINAL_POSITION, SPANNER_TYPE "
                 + "FROM INFORMATION_SCHEMA.COLUMNS");
     sqlStringBuilder.append(" WHERE TABLE_NAME = ANY (Array[");
     sqlStringBuilder.append("'Singers'");
@@ -946,6 +954,7 @@ public class SchemaUtilsTest {
             ResultSets.forRows(
                 Type.struct(
                     Type.StructField.of("table_name", Type.string()),
+                    Type.StructField.of("table_schema", Type.string()),
                     Type.StructField.of("column_name", Type.string()),
                     Type.StructField.of("ordinal_position", Type.int64()),
                     Type.StructField.of("spanner_type", Type.string())),
@@ -954,7 +963,7 @@ public class SchemaUtilsTest {
 
   private void mockInformationSchemaChangeStreamTablesQuery() {
     String sql =
-        "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.CHANGE_STREAM_TABLES "
+        "SELECT TABLE_NAME, TABLE_SCHEMA FROM INFORMATION_SCHEMA.CHANGE_STREAM_TABLES "
             + "WHERE CHANGE_STREAM_NAME = @changeStreamName";
 
     when(mockReadContext.executeQuery(
@@ -968,7 +977,7 @@ public class SchemaUtilsTest {
 
   private void mockInformationSchemaChangeStreamTablesQueryPostgres() {
     String sql =
-        "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.CHANGE_STREAM_TABLES "
+        "SELECT TABLE_NAME, TABLE_SCHEMA FROM INFORMATION_SCHEMA.CHANGE_STREAM_TABLES "
             + "WHERE CHANGE_STREAM_NAME = $1";
 
     when(mockReadContext.executeQuery(
@@ -982,7 +991,7 @@ public class SchemaUtilsTest {
 
   private void mockInformationSchemaKeyColumnUsageQuery() {
     String sql =
-        "SELECT TABLE_NAME, COLUMN_NAME, ORDINAL_POSITION, CONSTRAINT_NAME FROM"
+        "SELECT TABLE_NAME, TABLE_SCHEMA, COLUMN_NAME, ORDINAL_POSITION, CONSTRAINT_NAME FROM"
             + " INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME IN UNNEST (@tableNames)";
     List<String> tableNames = new ArrayList<>();
     tableNames.add("Singers");
@@ -993,6 +1002,8 @@ public class SchemaUtilsTest {
                 Struct.newBuilder()
                     .set("TABLE_NAME")
                     .to(Value.string("Singers"))
+                    .set("TABLE_SCHEMA")
+                    .to(Value.string(""))
                     .set("COLUMN_NAME")
                     .to(Value.string("SingerId"))
                     .set("ORDINAL_POSITION")
@@ -1008,6 +1019,7 @@ public class SchemaUtilsTest {
             ResultSets.forRows(
                 Type.struct(
                     Type.StructField.of("TABLE_NAME", Type.string()),
+                    Type.StructField.of("TABLE_SCHEMA", Type.string()),
                     Type.StructField.of("COLUMN_NAME", Type.string()),
                     Type.StructField.of("ORDINAL_POSITION", Type.int64()),
                     Type.StructField.of("CONSTRAINT_NAME", Type.string())),
@@ -1017,7 +1029,7 @@ public class SchemaUtilsTest {
   private void mockInformationSchemaKeyColumnUsageQueryPostgres() {
     StringBuilder sqlStringBuilder =
         new StringBuilder(
-            "SELECT TABLE_NAME, COLUMN_NAME, ORDINAL_POSITION, CONSTRAINT_NAME FROM"
+            "SELECT TABLE_NAME, TABLE_SCHEMA, COLUMN_NAME, ORDINAL_POSITION, CONSTRAINT_NAME FROM"
                 + " INFORMATION_SCHEMA.KEY_COLUMN_USAGE");
     sqlStringBuilder.append(" WHERE TABLE_NAME = ANY (Array[");
     sqlStringBuilder.append("'Singers'");
@@ -1043,6 +1055,7 @@ public class SchemaUtilsTest {
             ResultSets.forRows(
                 Type.struct(
                     Type.StructField.of("table_name", Type.string()),
+                    Type.StructField.of("table_schema", Type.string()),
                     Type.StructField.of("column_name", Type.string()),
                     Type.StructField.of("ordinal_position", Type.int64()),
                     Type.StructField.of("constraint_name", Type.string())),
