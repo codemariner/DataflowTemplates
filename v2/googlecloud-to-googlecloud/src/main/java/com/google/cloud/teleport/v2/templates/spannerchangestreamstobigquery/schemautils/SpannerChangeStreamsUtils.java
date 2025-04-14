@@ -30,6 +30,7 @@ import com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.mod
 import com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.model.TrackedSpannerColumn;
 import com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.model.TrackedSpannerTable;
 import com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.model.TrackedSpannerTableCollection;
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,7 +39,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,14 +91,14 @@ public class SpannerChangeStreamsUtils {
    *     in the initialization of the DoFn.
    */
   public TrackedSpannerTableCollection getSpannerTables() {
+    System.out.println("getSpannerTables");
     Set<TableIdentifier> spannerTableIdentifiers = getSpannerTablesTrackedByChangeStreams();
 
-    LOG.info("getSpannerTables: getSpannerTablesTrackedByChangeStreams: " + ReflectionToStringBuilder.reflectionToString(spannerTableIdentifiers));
+    LOG.info("getSpannerTables: getSpannerTablesTrackedByChangeStreams: " + new Gson().toJson(spannerTableIdentifiers));
+    System.out.println("getSpannerTables: getSpannerTablesTrackedByChangeStreams: " + new Gson().toJson(spannerTableIdentifiers));
 
     Map<TableIdentifier, Set<String>> spannerColumnNamesExplicitlyTrackedByChangeStreamByTableName =
         getSpannerColumnNamesExplicitlyTrackedByChangeStreamsByTableName();
-
-    LOG.info("getSpannerTables: getSpannerColumnNamesExplicitlyTrackedByChangeStreamsByTableName: " + ReflectionToStringBuilder.reflectionToString(spannerColumnNamesExplicitlyTrackedByChangeStreamByTableName));
 
     return getSpannerTableByName(
         spannerTableIdentifiers, spannerColumnNamesExplicitlyTrackedByChangeStreamByTableName);
@@ -114,14 +114,15 @@ public class SpannerChangeStreamsUtils {
   ) {
     Map<TableIdentifier, Map<String, Integer>> keyColumnNameToOrdinalPositionByTableIdentifier =
         getKeyColumnNameToOrdinalPositionByTableName(spannerTableIdentifiers);
-    LOG.info("getSpannerTableByName: getKeyColumnNameToOrdinalPositionByTableName: " + ReflectionToStringBuilder.reflectionToString(keyColumnNameToOrdinalPositionByTableIdentifier));
+    LOG.info("getSpannerTableByName: getKeyColumnNameToOrdinalPositionByTableName: " + new Gson().toJson(keyColumnNameToOrdinalPositionByTableIdentifier));
+    System.out.println("getSpannerTableByName: getKeyColumnNameToOrdinalPositionByTableName: " + new Gson().toJson(keyColumnNameToOrdinalPositionByTableIdentifier));
 
     Map<TableIdentifier, List<TrackedSpannerColumn>> spannerColumnsByTableIdentifier =
         getSpannerColumnsByTableIdentifier(
             spannerTableIdentifiers,
             keyColumnNameToOrdinalPositionByTableIdentifier,
             spannerColumnNamesExplicitlyTrackedByChangeStreamByTableName);
-    LOG.info("getSpannerTableByName: getSpannerColumnsByTableIdentifier: " + ReflectionToStringBuilder.reflectionToString(spannerColumnsByTableIdentifier));
+    LOG.info("getSpannerTableByName: getSpannerColumnsByTableIdentifier: " + new Gson().toJson(spannerColumnsByTableIdentifier));
 
     TrackedSpannerTableCollection result = new TrackedSpannerTableCollection();
 
@@ -362,6 +363,7 @@ public class SpannerChangeStreamsUtils {
       statementBuilder = Statement.newBuilder(sql);
     }
 
+    LOG.info("executing sql: "+ sql);
     Set<TableIdentifier> result = new HashSet<>();
     try (ResultSet resultSet =
         bound != null
@@ -370,7 +372,7 @@ public class SpannerChangeStreamsUtils {
                 .executeQuery(statementBuilder.build())
             : databaseClient.singleUse().executeQuery(statementBuilder.build())) {
 
-      LOG.debug("" + resultSet.getStats());
+      // LOG.debug("" + resultSet.getStats());
       while (resultSet.next()) {
         TableIdentifier tableIdentifier = new TableIdentifier(
             resultSet.getString(informationSchemaTableSchema()),

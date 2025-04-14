@@ -966,13 +966,20 @@ public class SchemaUtilsTest {
         "SELECT TABLE_NAME, TABLE_SCHEMA FROM INFORMATION_SCHEMA.CHANGE_STREAM_TABLES "
             + "WHERE CHANGE_STREAM_NAME = @changeStreamName";
 
+    System.out.println("mockInformationSchemaChangeStreamTablesQuery: " + sql);
     when(mockReadContext.executeQuery(
             Statement.newBuilder(sql).bind("changeStreamName").to(changeStreamName).build()))
         .thenReturn(
             ResultSets.forRows(
-                Type.struct(Type.StructField.of("TABLE_NAME", Type.string())),
+                Type.struct(
+                    Type.StructField.of("TABLE_NAME", Type.string()),
+                    Type.StructField.of("TABLE_SCHEMA", Type.string())
+                ),
                 Collections.singletonList(
-                    Struct.newBuilder().set("TABLE_NAME").to(Value.string("Singers")).build())));
+                    Struct.newBuilder()
+                      .set("TABLE_NAME").to(Value.string("Singers"))
+                      .set("TABLE_SCHEMA").to(Value.string(""))
+                    .build())));
   }
 
   private void mockInformationSchemaChangeStreamTablesQueryPostgres() {

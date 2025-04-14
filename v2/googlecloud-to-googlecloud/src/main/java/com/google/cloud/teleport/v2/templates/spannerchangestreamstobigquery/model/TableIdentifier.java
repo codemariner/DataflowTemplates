@@ -1,14 +1,19 @@
 package com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.model;
 
 import com.google.cloud.spanner.Dialect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TableIdentifier {
+  private static Logger log = LoggerFactory.getLogger((TableIdentifier.class));
+
   private String tableName;
   private String tableSchema;
 
   public TableIdentifier(String tableName, String tableSchema) {
     this.tableName = tableName;
     this.tableSchema = tableSchema;
+    log.info("TableIdentifier: tableName: " + tableName + ", tableSchema:" + tableSchema);
   }
 
   public String getTableName() {

@@ -27,6 +27,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.beam.sdk.coders.DefaultCoder;
 import org.apache.beam.sdk.extensions.avro.coders.AvroCoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The {@link TrackedSpannerTable} contains the table name and the columns of a Spanner table
@@ -34,6 +36,8 @@ import org.apache.beam.sdk.extensions.avro.coders.AvroCoder;
  */
 @DefaultCoder(AvroCoder.class)
 public final class TrackedSpannerTable implements Serializable {
+
+  private static final Logger LOG = LoggerFactory.getLogger(TrackedSpannerTable.class);
 
   private String tableName;
   private String tableSchema;
@@ -84,6 +88,8 @@ public final class TrackedSpannerTable implements Serializable {
     this.allColumns = new ArrayList<>(this.pkColumns.size() + this.nonPkColumns.size());
     allColumns.addAll(this.pkColumns);
     allColumns.addAll(this.nonPkColumns);
+
+    LOG.info("new TrackedSpannerTable: ", tableSchema, tableName);
   }
 
   public String getTableName() {
