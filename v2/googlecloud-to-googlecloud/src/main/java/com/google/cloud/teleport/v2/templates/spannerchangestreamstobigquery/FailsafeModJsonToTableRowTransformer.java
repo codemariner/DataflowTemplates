@@ -274,7 +274,7 @@ public final class FailsafeModJsonToTableRowTransformer {
         } catch (NoSuchElementException e) {
           String errorMessage =
               String.format(
-                  "Can not find spanner table %s in spannerTableByName", spannerTableName);
+                  "Can not find spanner table %s in spannerTables.getTableByFullyQualifiedName", spannerTableName);
           LOG.error(errorMessage);
           throw new RuntimeException(errorMessage, e);
         }

@@ -13,7 +13,7 @@ public class TableIdentifier {
   public TableIdentifier(String tableName, String tableSchema) {
     this.tableName = tableName;
     this.tableSchema = tableSchema;
-    log.info("TableIdentifier: tableName: " + tableName + ", tableSchema:" + tableSchema);
+    log.error("TableIdentifier: tableName: " + tableName + ", tableSchema:" + tableSchema);
   }
 
   public String getTableName() {

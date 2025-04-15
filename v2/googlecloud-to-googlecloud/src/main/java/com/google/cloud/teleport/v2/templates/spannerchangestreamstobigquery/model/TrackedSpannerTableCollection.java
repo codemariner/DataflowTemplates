@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A collection class for TrackedSpannerTable objects that provides both standard
@@ -16,6 +18,8 @@ import java.util.stream.Collectors;
 public class TrackedSpannerTableCollection implements Collection<TrackedSpannerTable>, Serializable {
 
     private final List<TrackedSpannerTable> tables = new ArrayList<>();
+
+    private static Logger log = LoggerFactory.getLogger(TrackedSpannerTableCollection.class);
 
     /**
      * Find a table by its fully qualified name.

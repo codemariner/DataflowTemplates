@@ -89,7 +89,7 @@ public final class TrackedSpannerTable implements Serializable {
     allColumns.addAll(this.pkColumns);
     allColumns.addAll(this.nonPkColumns);
 
-    LOG.info("new TrackedSpannerTable: ", tableSchema, tableName);
+    LOG.error("new TrackedSpannerTable: ", tableSchema, tableName);
   }
 
   public String getTableName() {
@@ -101,7 +101,9 @@ public final class TrackedSpannerTable implements Serializable {
   }
 
   public String getFullyQualifiedTableName() {
-    return this.tableSchema != null ? this.tableSchema + "." + this.tableName : this.tableName;
+    String name = this.tableSchema != null ? this.tableSchema + "." + this.tableName : this.tableName;
+    LOG.error("getFullyQualifiedTableName", this.tableSchema, this.tableName, name);
+    return name;
   }
 
   public List<TrackedSpannerColumn> getPkColumns() {

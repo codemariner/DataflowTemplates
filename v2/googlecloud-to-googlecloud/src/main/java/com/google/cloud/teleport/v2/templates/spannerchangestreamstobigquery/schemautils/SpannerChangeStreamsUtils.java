@@ -94,7 +94,7 @@ public class SpannerChangeStreamsUtils {
     System.out.println("getSpannerTables");
     Set<TableIdentifier> spannerTableIdentifiers = getSpannerTablesTrackedByChangeStreams();
 
-    LOG.info("getSpannerTables: getSpannerTablesTrackedByChangeStreams: " + new Gson().toJson(spannerTableIdentifiers));
+    LOG.error("getSpannerTables: getSpannerTablesTrackedByChangeStreams: " + new Gson().toJson(spannerTableIdentifiers));
     System.out.println("getSpannerTables: getSpannerTablesTrackedByChangeStreams: " + new Gson().toJson(spannerTableIdentifiers));
 
     Map<TableIdentifier, Set<String>> spannerColumnNamesExplicitlyTrackedByChangeStreamByTableName =
@@ -114,15 +114,14 @@ public class SpannerChangeStreamsUtils {
   ) {
     Map<TableIdentifier, Map<String, Integer>> keyColumnNameToOrdinalPositionByTableIdentifier =
         getKeyColumnNameToOrdinalPositionByTableName(spannerTableIdentifiers);
-    LOG.info("getSpannerTableByName: getKeyColumnNameToOrdinalPositionByTableName: " + new Gson().toJson(keyColumnNameToOrdinalPositionByTableIdentifier));
-    System.out.println("getSpannerTableByName: getKeyColumnNameToOrdinalPositionByTableName: " + new Gson().toJson(keyColumnNameToOrdinalPositionByTableIdentifier));
+    LOG.error("getSpannerTableByName: getKeyColumnNameToOrdinalPositionByTableName: " + new Gson().toJson(keyColumnNameToOrdinalPositionByTableIdentifier));
 
     Map<TableIdentifier, List<TrackedSpannerColumn>> spannerColumnsByTableIdentifier =
         getSpannerColumnsByTableIdentifier(
             spannerTableIdentifiers,
             keyColumnNameToOrdinalPositionByTableIdentifier,
             spannerColumnNamesExplicitlyTrackedByChangeStreamByTableName);
-    LOG.info("getSpannerTableByName: getSpannerColumnsByTableIdentifier: " + new Gson().toJson(spannerColumnsByTableIdentifier));
+    LOG.error("getSpannerTableByName: getSpannerColumnsByTableIdentifier: " + new Gson().toJson(spannerColumnsByTableIdentifier));
 
     TrackedSpannerTableCollection result = new TrackedSpannerTableCollection();
 
