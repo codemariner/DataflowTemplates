@@ -30,7 +30,6 @@ import com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.mod
 import com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.model.TrackedSpannerColumn;
 import com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.model.TrackedSpannerTable;
 import com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.model.TrackedSpannerTableCollection;
-import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -94,9 +93,6 @@ public class SpannerChangeStreamsUtils {
     System.out.println("getSpannerTables");
     Set<TableIdentifier> spannerTableIdentifiers = getSpannerTablesTrackedByChangeStreams();
 
-    LOG.error("getSpannerTables: getSpannerTablesTrackedByChangeStreams: " + new Gson().toJson(spannerTableIdentifiers));
-    System.out.println("getSpannerTables: getSpannerTablesTrackedByChangeStreams: " + new Gson().toJson(spannerTableIdentifiers));
-
     Map<TableIdentifier, Set<String>> spannerColumnNamesExplicitlyTrackedByChangeStreamByTableName =
         getSpannerColumnNamesExplicitlyTrackedByChangeStreamsByTableName();
 
@@ -114,14 +110,12 @@ public class SpannerChangeStreamsUtils {
   ) {
     Map<TableIdentifier, Map<String, Integer>> keyColumnNameToOrdinalPositionByTableIdentifier =
         getKeyColumnNameToOrdinalPositionByTableName(spannerTableIdentifiers);
-    LOG.error("getSpannerTableByName: getKeyColumnNameToOrdinalPositionByTableName: " + new Gson().toJson(keyColumnNameToOrdinalPositionByTableIdentifier));
 
     Map<TableIdentifier, List<TrackedSpannerColumn>> spannerColumnsByTableIdentifier =
         getSpannerColumnsByTableIdentifier(
             spannerTableIdentifiers,
             keyColumnNameToOrdinalPositionByTableIdentifier,
             spannerColumnNamesExplicitlyTrackedByChangeStreamByTableName);
-    LOG.error("getSpannerTableByName: getSpannerColumnsByTableIdentifier: " + new Gson().toJson(spannerColumnsByTableIdentifier));
 
     TrackedSpannerTableCollection result = new TrackedSpannerTableCollection();
 
@@ -195,7 +189,7 @@ public class SpannerChangeStreamsUtils {
         String tableName = columnsResultSet.getString(informationSchemaTableName());
         String columnName = columnsResultSet.getString(informationSchemaColumnName());
         String tableSchema = columnsResultSet.getString(informationSchemaTableSchema());
-        TableIdentifier tableIdentifier = new TableIdentifier(tableSchema, tableName);
+        TableIdentifier tableIdentifier = new TableIdentifier(tableName, tableSchema);
         // Skip if the columns of the table is tracked explicitly, and the specified column is not
         // tracked. Primary key columns are always tracked.
         if (spannerColumnNamesExplicitlyTrackedByChangeStreamByTableIdentifier.containsKey(tableIdentifier)
@@ -309,7 +303,7 @@ public class SpannerChangeStreamsUtils {
         String constraintName = keyColumnsResultSet.getString(informationSchemaConstraintName());
         // We are only interested in primary key constraint.
         if (isPrimaryKey(constraintName)) {
-          TableIdentifier tableIdentifier = new TableIdentifier(tableSchema, tableName);
+          TableIdentifier tableIdentifier = new TableIdentifier(tableName, tableSchema);
           result.putIfAbsent(tableIdentifier, new HashMap<>());
           result.get(tableIdentifier).put(columnName, ordinalPosition);
         }
@@ -374,8 +368,8 @@ public class SpannerChangeStreamsUtils {
       // LOG.debug("" + resultSet.getStats());
       while (resultSet.next()) {
         TableIdentifier tableIdentifier = new TableIdentifier(
-            resultSet.getString(informationSchemaTableSchema()),
-            resultSet.getString(informationSchemaTableName())
+            resultSet.getString(informationSchemaTableName()),
+            resultSet.getString(informationSchemaTableSchema())
         );
         result.add(tableIdentifier);
       }

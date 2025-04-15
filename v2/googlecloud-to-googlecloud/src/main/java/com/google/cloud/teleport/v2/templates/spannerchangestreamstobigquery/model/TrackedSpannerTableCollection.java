@@ -1,15 +1,15 @@
 package com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.model;
 
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A collection class for TrackedSpannerTable objects that provides both standard
@@ -19,8 +19,6 @@ public class TrackedSpannerTableCollection implements Collection<TrackedSpannerT
 
     private final List<TrackedSpannerTable> tables = new ArrayList<>();
 
-    private static Logger log = LoggerFactory.getLogger(TrackedSpannerTableCollection.class);
-
     /**
      * Find a table by its fully qualified name.
      * 
@@ -28,9 +26,13 @@ public class TrackedSpannerTableCollection implements Collection<TrackedSpannerT
      * @return The table if found, or empty if no matching table exists
      */
     public Optional<TrackedSpannerTable> getTableByFullyQualifiedName(String fullyQualifiedName) {
-        return tables.stream()
-                .filter(table -> table.getFullyQualifiedTableName().equals(fullyQualifiedName))
-                .findFirst();
+        for (TrackedSpannerTable table : tables) {
+            String name = table.getFullyQualifiedTableName();
+            if (table.getFullyQualifiedTableName().equals(fullyQualifiedName)) {
+                return Optional.of(table);
+            }
+        }
+        throw new NoSuchElementException();
     }
 
     // Collection interface methods

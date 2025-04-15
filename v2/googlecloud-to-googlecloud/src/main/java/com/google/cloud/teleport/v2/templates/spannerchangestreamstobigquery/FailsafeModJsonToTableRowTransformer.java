@@ -378,6 +378,11 @@ public final class FailsafeModJsonToTableRowTransformer {
           }
         }
 
+        try {
+          LOG.info("modJsonStringToTableRow: " + tableRow.toPrettyString());
+        } catch (Exception e) {
+          LOG.error("modJsonStringToTableRow: error: " + e.getMessage(), e.fillInStackTrace());
+        }
         return tableRow;
       }
 
