@@ -82,7 +82,7 @@ public final class BigQueryDynamicDestinations
     String bigQueryTableName =
         BigQueryConverters.formatStringTemplate(bigQueryTableTemplate, tableRow);
 
-    return String.format("%s:%s.%s", bigQueryProject, bigQueryDataset, bigQueryTableName);
+    return String.format("%s:%s.%s", bigQueryProject, bigQueryDataset, bigQueryTableName.replace('.', '_'));
   }
 
   @Override
@@ -93,12 +93,15 @@ public final class BigQueryDynamicDestinations
   @Override
   public KV<String, List<TableFieldSchema>> getDestination(ValueInSingleWindow<TableRow> element) {
     TableRow tableRow = element.getValue();
+    String name = getTableName(tableRow);
+    LOG.debug("getDestination: tableName: " + name);
     // Get List<TableFieldSchema> for both user columns and metadata columns.
     return KV.of(getTableName(tableRow), getFields(tableRow));
   }
 
   @Override
   public TableDestination getTable(KV<String, List<TableFieldSchema>> destination) {
+    LOG.debug("getTable: " + destination.getKey());
     return new TableDestination(destination.getKey(), "BigQuery changelog table.");
   }
 

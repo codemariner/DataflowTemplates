@@ -18,6 +18,7 @@ package com.google.cloud.teleport.v2.templates.spannerchangestreamstobigquery.mo
 import com.google.auto.value.AutoValue;
 import com.google.cloud.spanner.Type;
 import java.io.Serializable;
+import javax.annotation.Nullable;
 
 /**
  * The {@link TrackedSpannerColumn} contains the name, type and ordinal positions of a Spanner
@@ -27,9 +28,17 @@ import java.io.Serializable;
 public abstract class TrackedSpannerColumn implements Serializable {
 
   public static TrackedSpannerColumn create(
-      String name, Type type, int ordinalPosition, int pkOrdinalPosition) {
-    return new AutoValue_TrackedSpannerColumn(name, type, ordinalPosition, pkOrdinalPosition);
+      String tableSchema, String name, Type type, int ordinalPosition, int pkOrdinalPosition) {
+    return new AutoValue_TrackedSpannerColumn(tableSchema, name, type, ordinalPosition, pkOrdinalPosition);
   }
+
+  public static TrackedSpannerColumn create(
+      String name, Type type, int ordinalPosition, int pkOrdinalPosition) {
+    return TrackedSpannerColumn.create(null, name, type, ordinalPosition, pkOrdinalPosition);
+  }
+
+  @Nullable
+  public abstract String getTableSchema();
 
   public abstract String getName();
 

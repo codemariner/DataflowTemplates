@@ -36,6 +36,7 @@ import org.apache.beam.sdk.extensions.avro.coders.AvroCoder;
 public final class TrackedSpannerTable implements Serializable {
 
   private String tableName;
+  private String tableSchema;
   // Primary key should be exactly the same as the tracked Spanner table.
   private List<TrackedSpannerColumn> pkColumns;
   // Non-primary key only include the tracked Spanner columns.
@@ -62,6 +63,15 @@ public final class TrackedSpannerTable implements Serializable {
       String tableName,
       List<TrackedSpannerColumn> pkColumns,
       List<TrackedSpannerColumn> nonPkColumns) {
+    this(null, tableName, pkColumns, nonPkColumns);
+  }
+
+  public TrackedSpannerTable(
+      String tableSchema,
+      String tableName,
+      List<TrackedSpannerColumn> pkColumns,
+      List<TrackedSpannerColumn> nonPkColumns) {
+    this.tableSchema = tableSchema;
     this.pkColumns = new ArrayList<>(pkColumns);
     this.nonPkColumns = new ArrayList<>(nonPkColumns);
     this.nonPkColumnsNamesSet =
@@ -78,6 +88,15 @@ public final class TrackedSpannerTable implements Serializable {
 
   public String getTableName() {
     return tableName;
+  }
+
+  public String getTableSchema() {
+    return this.tableSchema;
+  }
+
+  public String getFullyQualifiedTableName() {
+    String name = this.tableSchema != null ? this.tableSchema + "." + this.tableName : this.tableName;
+    return name;
   }
 
   public List<TrackedSpannerColumn> getPkColumns() {
@@ -99,6 +118,7 @@ public final class TrackedSpannerTable implements Serializable {
   // TrackedSpannerColumn.create requires name, type, ordinalPosition, pkOrdinalPosition. The
   // ordinal position of the primary key should be set to -1 for non-primary key and vice versa.
   public void addTrackedSpannerColumn(
+      String schemaName,
       String columnName,
       String typeString,
       int ordinalPosition,
@@ -106,6 +126,7 @@ public final class TrackedSpannerTable implements Serializable {
       Dialect dialect) {
     TrackedSpannerColumn newSpannerColumnObj =
         TrackedSpannerColumn.create(
+            schemaName,
             columnName,
             TypesUtils.informationSchemaGoogleSQLTypeToSpannerType(typeString),
             ordinalPosition,
@@ -129,13 +150,14 @@ public final class TrackedSpannerTable implements Serializable {
     }
     TrackedSpannerTable that = (TrackedSpannerTable) o;
     return Objects.equals(tableName, that.tableName)
+        && Objects.equals(tableSchema, that.tableSchema)
         && Objects.equals(pkColumns, that.pkColumns)
         && Objects.equals(nonPkColumns, that.nonPkColumns);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tableName, pkColumns, nonPkColumns);
+    return Objects.hash(tableSchema, tableName, pkColumns, nonPkColumns);
   }
 
   @Override
@@ -143,6 +165,9 @@ public final class TrackedSpannerTable implements Serializable {
     return "TrackedSpannerTable{"
         + "tableName='"
         + tableName
+        + '\''
+        + ", tableSchema='"
+        + tableSchema
         + '\''
         + ", pkColumns="
         + pkColumns
