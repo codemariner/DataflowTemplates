@@ -225,6 +225,7 @@ public final class FailsafeModJsonToTableRowTransformer {
       }
 
       private TableRow modJsonStringToTableRow(String modJsonString) {
+        LOG.debug("modJsonStringToTableRow: " + modJsonString);
         String deadLetterMessage =
             "check dead letter queue for unprocessed records that failed to be processed";
         ObjectNode modObjectNode = null;
@@ -246,6 +247,7 @@ public final class FailsafeModJsonToTableRowTransformer {
 
         Mod mod = null;
         try {
+          LOG.info("modObjectNode.toString(): " + modObjectNode.toString());
           mod = Mod.fromJson(modObjectNode.toString());
         } catch (IOException e) {
           String errorMessage =
@@ -346,8 +348,9 @@ public final class FailsafeModJsonToTableRowTransformer {
         int retryCount = 0;
         while (true) {
           try {
+            LOG.debug("modJsonStringToTableRow: spanneerTable name" + spannerTable.getFullyQualifiedTableName());
             readSpannerRow(
-                spannerTable.getTableName(),
+                spannerTable.getFullyQualifiedTableName(),
                 keyBuilder.build(),
                 spannerNonPkColumns,
                 spannerNonPkColumnNames,
@@ -394,6 +397,7 @@ public final class FailsafeModJsonToTableRowTransformer {
           List<String> spannerNonPkColumnNames,
           com.google.cloud.Timestamp spannerCommitTimestamp,
           TableRow tableRow) {
+        LOG.debug("readSpannerRow:  tableName" + spannerTableName);
         Options.ReadQueryUpdateTransactionOption options =
             Options.priority(spannerConfig.getRpcPriority().get());
         // Create a context that uses the custom call configuration.
