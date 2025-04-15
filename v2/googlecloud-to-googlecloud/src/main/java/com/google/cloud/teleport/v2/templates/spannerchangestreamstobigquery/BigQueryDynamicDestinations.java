@@ -82,7 +82,7 @@ public final class BigQueryDynamicDestinations
     String bigQueryTableName =
         BigQueryConverters.formatStringTemplate(bigQueryTableTemplate, tableRow);
 
-    return String.format("%s:%s.%s", bigQueryProject, bigQueryDataset, bigQueryTableName);
+    return String.format("%s:%s.%s", bigQueryProject, bigQueryDataset, bigQueryTableName.replace('.', '_'));
   }
 
   @Override

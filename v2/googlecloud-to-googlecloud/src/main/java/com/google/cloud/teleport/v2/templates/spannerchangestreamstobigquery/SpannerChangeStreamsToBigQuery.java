@@ -381,10 +381,6 @@ public final class SpannerChangeStreamsToBigQuery {
     List<String> results = OptionsUtils.processBigQueryProjectAndDataset(options);
     String bigqueryProject = results.get(0);
     String bigqueryDataset = results.get(1);
-    if (bigqueryDataset != null && bigqueryDataset.indexOf(".") > -1) {
-      bigqueryDataset = bigqueryDataset.substring(0, bigqueryDataset.indexOf("."));
-      LOG.debug("normalizing biqueryDataset name to: " + bigqueryDataset);
-    }
 
     BigQueryDynamicDestinations.BigQueryDynamicDestinationsOptions
         bigQueryDynamicDestinationsOptions =
