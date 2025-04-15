@@ -27,6 +27,7 @@ public class OptionsUtils {
 
   public static List<String> processBigQueryProjectAndDataset(
       SpannerChangeStreamsToBigQueryOptions options) {
+    LOG.debug("processBigQueryProjectAndDataseet: " + options, options);
     String bigqueryProjectId = options.getBigQueryProjectId();
     String bigqueryDataset = options.getBigQueryDataset();
     int datasetStartPos = bigqueryDataset.indexOf(".");
@@ -42,6 +43,7 @@ public class OptionsUtils {
     }
     bigqueryProjectId = bigqueryProjectId.isEmpty() ? options.getProject() : bigqueryProjectId;
     bigqueryDataset = bigqueryDataset.substring(datasetStartPos + 1);
+    LOG.debug("processBigQueryProjectAndDataseet: " + bigqueryDataset);
 
     List<String> results = Arrays.asList(bigqueryProjectId, bigqueryDataset);
     return results;
